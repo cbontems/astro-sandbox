@@ -1,0 +1,11 @@
+---
+import { Image } from 'astro:assets';
+import heartBeat from '~/assets/heartbeat.png';
+---
+
+<header class="px-5 py-10 sm:px-24 sm:py-12 max-w-7xl w-full mx-auto">
+    <a href="/" class="flex items-center gap-4">
+        <Image src={heartBeat} alt="A beating heart icon" width="64" height="64" class="w-16"/>
+        <p class="uppercase text-3xl">blog</p>
+    </a>
+</header>
