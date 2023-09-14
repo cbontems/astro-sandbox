@@ -1,9 +1,11 @@
 ---
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import "@fontsource/cabin" 
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import "@fontsource/cabin";
+import { Sprite } from "astro-icon";
+
 interface Props {
-	title: string;
+  title: string;
 }
 
 const { title } = Astro.props;
@@ -11,17 +13,19 @@ const { title } = Astro.props;
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body class="min-h-screen grid grid-rows-[auto,1fr,auto]">
-		<Header />
-		<slot />
-		<Footer />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <Sprite.Provider>
+    <body class="min-h-screen grid grid-rows-[auto,1fr,auto]">
+      <Header />
+      <slot />
+      <Footer />
+    </body>
+  </Sprite.Provider>
 </html>

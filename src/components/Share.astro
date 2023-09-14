@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { Sprite } from "astro-icon";
+
+type Props = {
+  post: CollectionEntry<"posts">;
+};
+const { post } = Astro.props;
+---
+
+<div class="hidden sm:flex flex-col gap-y-9 absolute top-2 -left-20">
+  <a
+    href="href={`https://twitter.com/intent/tweet?url=https://rhythm.nation/blog/${post.slug}`}"
+    ><Sprite
+      class="text-zinc-500"
+      width="36"
+      height="36"
+      name="mdi:twitter"
+    /></a
+  >
+  <a
+    href={`https://www.linkedin.com/sharing/share-offsite/?url=https://rhythm.nation/blog/${post.slug}`}
+    ><Sprite
+      class="text-zinc-500"
+      width="36"
+      height="36"
+      name="mdi:linkedin"
+    /></a
+  >
+</div>
