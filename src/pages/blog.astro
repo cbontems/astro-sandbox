@@ -4,15 +4,21 @@ import Layout from "~/layouts/Layout.astro";
 import Main from "~/components/Main.astro";
 import PostsList from "~/components/PostsList.astro";
 import H1 from "~/components/H1.astro";
+import Pagination from "~/components/Pagination.astro";
 
-const allPosts = await getCollection("posts");
+const allPosts = (await getCollection("posts")).slice(0,6);
 ---
 
 <Layout title="Blog - Astro Sandbox">
     <Main>
         <H1>Rythm Nation Blog</H1>
 		<p class="text-zinc-900 text-2xl mb-14 sm:mb-24 ">Join the Community and learn from Music Producers and Enthusiasts</p>
-		<hr class="w-full border border-teal-900 mb-10 sm:mb-16 "/>
+        <div class="flex justify-between mb-12">
+            <Pagination next="/blog/2" />
+        </div>
         <PostsList posts={allPosts} />
+        <div class="flex justify-between mb-36">
+            <Pagination next="/blog/2" />
+        </div>
     </Main>
 </Layout>

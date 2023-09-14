@@ -7,6 +7,6 @@ type Props = {
 const { posts } = Astro.props as Props;
 ---
 
-<div class="grid md:grid-cols-2 gap-x-16 gap-y-14 md:gap-y-32">
+<div class="grid md:grid-cols-2 gap-x-16 gap-y-14 md:gap-y-32 my-10">
   {posts.map((post) => <Post post={post} />)}
 </div>
