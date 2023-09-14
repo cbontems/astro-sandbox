@@ -2,6 +2,10 @@
 import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+import Layout from "~/layouts/Layout.astro";
+import Main from "~/components/Main.astro";
+import H1 from "~/components/H1.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection("posts");
@@ -21,5 +25,22 @@ type Props = {
 };
 
 const { post } = Astro.props;
+const { Content, headings} = await post.render();
+
+const { title, author, image } = post.data;
 ---
-{post.data.title}
+
+<Layout title={title}>
+  <Main>
+    <a href="/blog" class="text-zinc-500 text-2xl mb-16 underline block">← Back to all posts</a>
+    <H1>{title}</H1>
+    <Image
+    src={image}
+    alt={title}
+    class="rounded-2xl shadow-xl mb-28 aspect-thumbnail object-cover"
+  />
+  <div class="prose prose-2xl overflow-visible relative">
+    <Content />
+  </div>
+  </Main>
+</Layout>
