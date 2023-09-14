@@ -12,8 +12,8 @@ const { post }: Props = Astro.props;
   <a href={`/blog/${post.slug}`}>
     <Image
       src={post.data.image}
-      width={1024}
-      height={1024 / 2}
+      width={600}
+      height={600 / 2}
       alt={post.data.title}
       class="rounded-2xl shadow-xl mb-6 aspect-thumbnail object-cover"
     />

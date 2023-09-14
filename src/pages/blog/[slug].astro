@@ -29,10 +29,10 @@ type Props = {
 const { post } = Astro.props;
 const { Content, headings } = await post.render();
 
-const { title, author, image } = post.data;
+const { title, author, image, description } = post.data;
 ---
 
-<Layout title={title}>
+<Layout title={title} image={image.src} description={description}>
   <Main>
     <a href="/blog" class="text-zinc-500 text-2xl mb-16 underline block"
       >← Back to all posts</a
@@ -41,6 +41,8 @@ const { title, author, image } = post.data;
     <Image
       src={image}
       alt={title}
+      width={1200}
+      height={1200 / 2}
       class="rounded-2xl shadow-xl mb-28 aspect-thumbnail object-cover"
     />
     <div class="mb-10">

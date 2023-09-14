@@ -12,6 +12,7 @@ const postsCollection = defineCollection({
       message: "Post cover image must be at least 640 pixels wide!",
     }),
     title: z.string(),
+    description: z.string(),
   }),
 });
 // 3. Export a single `collections` object to register your collection(s)

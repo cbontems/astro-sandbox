@@ -1,15 +1,38 @@
 ---
-import Main from '~/components/Main.astro';
-import Layout from '../layouts/Layout.astro';
-import H1 from '~/components/H1.astro';
+import Main from "~/components/Main.astro";
+import Layout from "../layouts/Layout.astro";
+import H1 from "~/components/H1.astro";
+import { getCollection } from "astro:content";
+import FeaturedPost from "~/components/FeaturedPost.astro";
+import CategoryList from "~/components/CategoryList.astro";
+import PostsList from "~/components/PostsList.astro";
+
+const allPosts = await getCollection("posts");
+const featuredPosts = allPosts.filter((post) => post.data.featured);
+const posts = allPosts.filter((post) => !post.data.featured).slice(0, 4);
+const allCategories = allPosts.flatMap((post) => post.data.categories);
+const categories = [...new Set(allCategories)];
 ---
 
 <Layout title="Welcome to Astro.">
-	<Main>
-		<H1>Rythm Nation Blog</H1>
-		<p class="text-zinc-900 text-2xl mb-14 sm:mb-24 ">Join the Community and learn from Music Producers and Enthusiasts</p>
-		<hr class="w-full border border-teal-900 mb-10 sm:mb-16 "/>
-	</Main>
+  <Main>
+    <H1>Rythm Nation Blog</H1>
+    <p class="text-zinc-900 text-2xl mb-14 sm:mb-24">
+      Join the Community and learn from Music Producers and Enthusiasts
+    </p>
+    {featuredPosts.map((post) => <FeaturedPost post={post} />)}
+    <hr class="w-full border border-teal-900 mb-10 sm:mb-16" />
+
+    <CategoryList categories={categories} title="Recent Posts" />
+
+    <div class="mb-32">
+      <PostsList posts={posts} />
+    </div>
+    <div class="flex justify-end mb-36 sm:mb-60">
+      <a
+        href="/blog"
+        class="bg-teal-900 text-white py-3 px-6 rounded-xl text-xl">Read More</a
+      >
+    </div>
+  </Main>
 </Layout>
-
-
