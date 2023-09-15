@@ -1,0 +1,74 @@
+---
+import H1 from "~/components/H1.astro";
+import Main from "~/components/Main.astro";
+import Layout from "~/layouts/Layout.astro";
+import { XataClient } from "~/xata";
+import bcrypt from "bcryptjs";
+
+// handle the POST request here
+const errors: Record<string, string> = {};
+
+if (Astro.request.method === "POST") {
+  const xata = new XataClient({ apiKey: import.meta.env.XATA_API_KEY });
+  const data = await Astro.request.formData();
+  const email = data.get("email") as string;
+  const password = data.get("password") as string;
+
+  const user = await xata.db.users.filter({ email }).getFirst();
+
+  if (!user) {
+    errors.email = "Email not found";
+  } else {
+    const authenticated = await bcrypt.compareSync(password, user.password);
+    if (!authenticated) {
+      errors.password = "Password is incorrect";
+    } else {
+      Astro.cookies.set("userId", user.id, { httpOnly: true, secure: true });
+      Astro.cookies.set("userName", user.name, {
+        httpOnly: true,
+        secure: true,
+      });
+      Astro.cookies.set("userEmail", user.email, {
+        httpOnly: true,
+        secure: true,
+      });
+      return Astro.redirect("/", 302);
+    }
+  }
+}
+---
+
+<Layout title="Log In">
+  <Main>
+    <H1>Log In</H1>
+    <form method="POST">
+      <label for="email" class="mb-2 block text-teal-900">Email</label>
+      <input
+        type="email"
+        class="border-teal-900 border w-full mb-2 rounded-lg px-6 py-3"
+        id="email"
+        name="email"
+      />
+      <p class="text-red-800 mb-10 h-10">{errors.email}</p>
+      <label for="password" class="mb-2 block text-teal-900">Password</label>
+      <input
+      type="password"
+      class="border-teal-900 border w-full mb-2 rounded-lg px-6 py-3"
+      id="password"
+      name="password"
+      />
+      <p class="text-red-800 mb-10">{errors.password}</p>
+      <button
+        type="submit"
+        class="bg-teal-900 text-white text-2xl w-full rounded-lg px-6 py-3 mb-11"
+        >Log In</button
+      >
+    </form>
+    <p>
+      Don’t have an account yet? <a
+        href="/signup"
+        class="text-teal-900 underline">Sign Up</a
+      >
+    </p>
+  </Main>
+</Layout>

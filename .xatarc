@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://C-dric-s-workspace-0u9g8k.eu-central-1.xata.sh/db/astro-sandbox",
+  "codegen": {
+    "output": "src/xata.ts"
+  }
+}

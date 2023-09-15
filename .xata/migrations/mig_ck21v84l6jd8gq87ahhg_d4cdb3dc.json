@@ -1,0 +1,11 @@
+{
+  "id": "mig_ck21v84l6jd8gq87ahhg",
+  "checksum": "1:d4cdb3dc0f10ee1e1d4f469db857fa0e74f429cefbe006a8d02205ae36f33345",
+  "operations": [
+    {
+      "addTable": {
+        "table": "users"
+      }
+    }
+  ]
+}

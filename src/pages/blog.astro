@@ -7,23 +7,40 @@ import H1 from "~/components/H1.astro";
 import Pagination from "~/components/Pagination.astro";
 import CategoryList from "~/components/CategoryList.astro";
 
-const allPosts = (await getCollection("posts")).slice(0,6);
-
+const postsPerPage = Number(import.meta.env.POSTS_PER_PAGE);
+const allPosts = await getCollection("posts");
+const page = Number(Astro.url.searchParams.get("page")) || 1;
+const start = (page - 1) * postsPerPage;
+const end = start + postsPerPage;
+const posts = allPosts.slice(start, end);
 const allCategories = allPosts.flatMap((post) => post.data.categories);
 const categories = [...new Set(allCategories)];
 ---
 
-<Layout title="Blog - Rythm Nation" description="Read and learn from Music Producers and Enthusiasts">
-    <Main>
-        <H1>Rythm Nation Blog</H1>
-		<p class="text-zinc-900 text-2xl mb-14 sm:mb-24 ">Join the Community and learn from Music Producers and Enthusiasts</p>
-        <CategoryList categories={categories} title="Tags" />
-        <div class="flex justify-between mb-12">
-            <Pagination next="/blog/2" />
-        </div>
-        <PostsList posts={allPosts} />
-        <div class="flex justify-between mb-36">
-            <Pagination next="/blog/2" />
-        </div>
-    </Main>
+<Layout
+  title="Blog - Rythm Nation"
+  description="Read and learn from Music Producers and Enthusiasts"
+>
+  <Main>
+    <H1>Rythm Nation Blog</H1>
+    <p class="text-zinc-900 text-2xl mb-14 sm:mb-24">
+      Join the Community and learn from Music Producers and Enthusiasts
+    </p>
+    <CategoryList categories={categories} title="Tags" />
+    <div class="flex justify-between mb-12">
+      <Pagination
+        page={page}
+        numberOfPosts={allPosts.length}
+        postsPerPage={postsPerPage}
+      />
+    </div>
+    <PostsList posts={posts} />
+    <div class="flex justify-between mb-36">
+      <Pagination
+        page={page}
+        numberOfPosts={allPosts.length}
+        postsPerPage={postsPerPage}
+      />
+    </div>
+  </Main>
 </Layout>

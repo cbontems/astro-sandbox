@@ -1,43 +1,54 @@
 ---
-import type { GetStaticPaths } from "astro";
-import { getCollection } from "astro:content";
-import type { CollectionEntry } from "astro:content";
+import { getEntryBySlug } from "astro:content";
 import { Image } from "astro:assets";
 import Layout from "~/layouts/Layout.astro";
 import Main from "~/components/Main.astro";
 import H1 from "~/components/H1.astro";
 import TableOfContent from "~/components/TableOfContent.astro";
 import Share from "~/components/Share.astro";
+import PostMeta from "~/components/PostMeta.astro";
+import { getThumbnail } from "~/cloudinary";
+import CommentForm from "~/components/CommentForm.astro";
+import CommentList from "~/components/CommentList.astro";
+import { XataClient } from "~/xata";
 
-export const getStaticPaths = (async () => {
-  const posts = await getCollection("posts");
-  const paths = posts.map((post: CollectionEntry<"posts">) => ({
-    params: {
-      slug: post.slug,
-    },
-    props: {
-      post,
-    },
-  }));
-  return paths;
-}) satisfies GetStaticPaths;
+const { slug } = Astro.params;
 
-type Props = {
-  post: CollectionEntry<"posts">;
-};
+const xata = new XataClient({ apiKey: import.meta.env.XATA_API_KEY });
 
-const { post } = Astro.props;
+if (Astro.request.method === "POST") {
+  const user = Astro.cookies.get("userId");
+  if (!user?.value) return Astro.redirect("/login");
+  const data = await Astro.request.formData();
+  const comment = data.get("comment") as string;
+
+  await xata.db.comments.create({
+    post: slug,
+    text: comment,
+    date: new Date(),
+    user: user.value,
+  });
+}
+const post = await getEntryBySlug("posts", slug as string);
+if (!post) return Astro.redirect("/404");
+
+const comments = await xata.db.comments
+  .select(["id", "text", "date", "user.name"])
+  .filter({ post: slug as string })
+  .getMany();
+
 const { Content, headings } = await post.render();
 
-const { title, author, image, description } = post.data;
+const { title, image, description } = post.data;
 ---
 
-<Layout title={title} image={image.src} description={description}>
+<Layout title={title} image={getThumbnail(title)} description={description}>
   <Main>
     <a href="/blog" class="text-zinc-500 text-2xl mb-16 underline block"
       >← Back to all posts</a
     >
     <H1>{title}</H1>
+    <PostMeta post={post} />
     <Image
       src={image}
       alt={title}
@@ -55,4 +66,23 @@ const { title, author, image, description } = post.data;
       </div>
     </div>
   </Main>
+  <div
+    class="bg-teal-100/30 py-14 px-24 relative border-b border-teal-900 mt-4"
+  >
+    <div class="px-5 sm:px-24 sm:pb-10 max-w-7xl mx-auto w-full">
+      <div id="comments" class="mb-4">
+        <h2>
+          <span class="text-teal-900 text-4xl font-bold mr-12">Comments</span>
+          <span
+            class="border border-teal-900 text-teal-900 rounded-full px-4 py-2 font-bold text-xl"
+            >{comments.length}</span
+          >
+        </h2>
+      </div>
+      <div class="mb-14">
+        <CommentForm />
+    </div>
+      <CommentList comments={comments} />
+    </div>
+  </div>
 </Layout>

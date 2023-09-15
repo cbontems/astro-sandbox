@@ -10,13 +10,18 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/netlify": "3.0.1",
     "@astrojs/rss": "3.0.0",
     "@astrojs/tailwind": "5.0.0",
+    "@cloudinary/url-gen": "1.11.2",
     "@fontsource/cabin": "5.0.8",
+    "@tailwindcss/typography": "0.5.10",
     "@types/markdown-it": "13.0.1",
     "@types/sanitize-html": "2.9.0",
+    "@xata.io/client": "0.26.5",
     "astro": "^3.0.13",
     "astro-icon": "0.8.1",
+    "bcryptjs": "2.4.3",
     "date-fns": "2.30.0",
     "markdown-it": "13.0.1",
     "sanitize-html": "2.11.0",
@@ -24,7 +29,7 @@
     "tailwindcss": "^3.0.24"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "0.5.10",
+    "@types/bcryptjs": "2.4.3",
     "prettier": "3.0.3",
     "prettier-plugin-astro": "0.12.0"
   }

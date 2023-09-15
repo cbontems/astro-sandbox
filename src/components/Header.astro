@@ -1,11 +1,20 @@
 ---
 import { Image } from 'astro:assets';
 import heartBeat from '~/assets/heartbeat.png';
+
+const userEmail = Astro.cookies.get('userEmail');
 ---
 
-<header class="px-5 py-10 sm:px-24 sm:py-12 max-w-7xl w-full mx-auto">
+<header class="flex items-center justify-between px-5 py-10 sm:px-24 sm:py-12 max-w-7xl w-full mx-auto">
     <a href="/" class="flex items-center gap-4">
         <Image src={heartBeat} alt="A beating heart icon" width="64" height="64" class="w-16"/>
         <p class="uppercase text-3xl">blog</p>
     </a>
+    {
+        userEmail?.value ? (
+            <a href="/logout" class="bg-teal-900 text-white py-3 px-6 rounded-xl text-xl">Log Out</a>
+        ) : (
+            <a href="/login" class="bg-teal-900 text-white py-3 px-6 rounded-xl text-xl">Log In</a>
+        )
+    }
 </header>

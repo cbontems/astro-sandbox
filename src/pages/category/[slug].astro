@@ -1,5 +1,4 @@
 ---
-import type { GetStaticPaths } from "astro";
 import { getCollection, type CollectionEntry } from "astro:content";
 import CategoryList from "~/components/CategoryList.astro";
 import H1 from "~/components/H1.astro";
@@ -8,37 +7,16 @@ import Pagination from "~/components/Pagination.astro";
 import PostsList from "~/components/PostsList.astro";
 import Layout from "~/layouts/Layout.astro";
 
-export const getStaticPaths = (async () => {
-  const posts = await getCollection("posts");
-
-  const allCategories = posts.flatMap((post) => post.data.categories);
-  const categories = [...new Set(allCategories)];
-
-  const paths = categories.map((category) => {
-    const postsInCategory = posts.filter((post) =>
-      post.data.categories.includes(category)
-    );
-
-    return {
-      params: {
-        slug: category,
-      },
-      props: {
-        category,
-        posts: postsInCategory,
-      },
-    };
-  });
-
-  return paths;
-}) satisfies GetStaticPaths;
-
-type Props = {
-  category: string;
-  posts: CollectionEntry<"posts">[];
-};
-
-const { category, posts }: Props = Astro.props;
+const postsPerPage = Number(import.meta.env.POSTS_PER_PAGE);
+const category = Astro.params.slug as string;
+const allPosts = (await getCollection("posts"));
+const allPostsInCategory = allPosts.filter((post) =>
+  post.data.categories.includes(category)
+);
+const page = Number(Astro.url.searchParams.get("page")) || 1;
+const start = (page - 1) * postsPerPage;
+const end = start + postsPerPage;
+const posts = allPostsInCategory.slice(start, end);
 ---
 
 <Layout
@@ -48,18 +26,26 @@ const { category, posts }: Props = Astro.props;
   <Main>
     <a href="/blog" class="text-zinc-500 text-2xl mb-16 underline block"
       >← Back to all posts</a
-    > 
+    >
     <H1>Rythm Nation Blog</H1>
     <p class="text-zinc-900 text-2xl mb-14 sm:mb-24">
       Join the Community and learn from Music Producers and Enthusiasts
     </p>
     <CategoryList categories={[category]} title="Posts Tagged" />
-    <div class="flex justify-between mb-12">
-      <Pagination next="/blog/2" />
-    </div>
-    <PostsList posts={posts} />
-    <div class="flex justify-between mb-36">
-      <Pagination next="/blog/2" />
-    </div>
+    {
+      posts.length === 0 ? (
+        <p class="text-zinc-500 text-2xl mb-14 sm:mb-24">
+          No posts found in this category.
+        </p>
+      ) : (
+      <div class="flex justify-between mb-12">
+        <Pagination page={page} numberOfPosts={allPostsInCategory.length} postsPerPage={postsPerPage}/>
+      </div>
+        <PostsList posts={posts} />
+      <div class="flex justify-between mb-36">
+        <Pagination page={page} numberOfPosts={allPostsInCategory.length} postsPerPage={postsPerPage}/>
+     </div>
+      )
+    }
   </Main>
 </Layout>

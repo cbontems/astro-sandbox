@@ -1,0 +1,70 @@
+---
+import H1 from "~/components/H1.astro";
+import Main from "~/components/Main.astro";
+import Layout from "~/layouts/Layout.astro";
+import { XataClient } from "~/xata";
+import bcrypt from "bcryptjs";
+
+// handle the POST request here
+if (Astro.request.method === "POST") {
+  const xata = new XataClient({ apiKey: import.meta.env.XATA_API_KEY });
+  const data = await Astro.request.formData();
+  const name = data.get("name") as string;
+  const email = data.get("email") as string;
+  const password = data.get("password") as string;
+
+  // hash the password
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(password, salt);
+
+  const user = await xata.db.users.create({
+    name,
+    email,
+    password: hash,
+  });
+
+  Astro.cookies.set("userId", user.id, { httpOnly: true, secure: true });
+  Astro.cookies.set("userName", user.name, { httpOnly: true, secure: true });
+  Astro.cookies.set("userEmail", user.email, { httpOnly: true, secure: true });
+
+  return Astro.redirect("/", 302);
+}
+---
+
+<Layout title="Sign Up">
+  <Main>
+    <H1>Sign Up</H1>
+    <form method="POST">
+      <label for="name" class="mb-2 block text-teal-900">Full name</label>
+      <input
+        type="text"
+        class="border-teal-900 border w-full mb-10 rounded-lg px-6 py-3"
+        id="name"
+        name="name"
+      />
+      <label for="email" class="mb-2 block text-teal-900">Email</label>
+      <input
+        type="email"
+        class="border-teal-900 border w-full mb-10 rounded-lg px-6 py-3"
+        id="email"
+        name="email"
+      />
+      <label for="password" class="mb-2 block text-teal-900">Password</label>
+      <input
+        type="password"
+        class="border-teal-900 border w-full mb-10 rounded-lg px-6 py-3"
+        id="password"
+        name="password"
+      />
+      <button
+        type="submit"
+        class="bg-teal-900 text-white text-2xl w-full rounded-lg px-6 py-3 mb-11"
+        >Sign Up</button
+      >
+    </form>
+    <p>
+      Already have an account? <a href="/login" class="text-teal-900 underline"
+        >Log In</a>
+    </p>
+  </Main>
+</Layout>

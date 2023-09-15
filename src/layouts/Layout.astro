@@ -3,6 +3,7 @@ import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import "@fontsource/cabin";
 import { Sprite } from "astro-icon";
+import { getThumbnail } from "~/cloudinary";
 
 export interface Props {
   title?: string;
@@ -13,7 +14,7 @@ export interface Props {
 const {
   title = "Rhythm Nation",
   description = "A community of music producers and enthusiasts",
-  image = "/images/drums.png",
+  image = getThumbnail("A community of music producers and enthusiasts"),
 } = Astro.props;
 ---
 
@@ -41,12 +42,11 @@ const {
     <meta property="twitter:image" content={image} />
     <meta property="twitter:image:alt" content={title} />
   </head>
-  <Sprite.Provider>
-    <body class="min-h-screen grid grid-rows-[auto,1fr,auto]">
-      <Header />
+  <body class="min-h-screen grid grid-rows-[auto,1fr,auto]">
+    <Header />
+    <Sprite.Provider>
       <slot />
-      <Footer />
-    </body>
-  </Sprite.Provider>
-
+    </Sprite.Provider>
+    <Footer />
+  </body>
 </html>
