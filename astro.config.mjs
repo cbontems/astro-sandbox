@@ -1,4 +1,4 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig, sharpImageService } from "astro/config";
 import tailwind from "@astrojs/tailwind";
 
 import netlify from "@astrojs/netlify/functions";
@@ -8,5 +8,8 @@ export default defineConfig({
   integrations: [tailwind()],
   site: "https://main--cute-travesseiro-0e201a.netlify.app/",
   output: "server",
-  adapter: netlify()
+  adapter: netlify(),
+  image: {
+    service: sharpImageService(),
+  },
 });
