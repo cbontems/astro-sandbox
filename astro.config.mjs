@@ -7,7 +7,5 @@ export default defineConfig({
   integrations: [tailwind()],
   site: "https://main--cute-travesseiro-0e201a.netlify.app/",
   output: "server",
-  adapter: netlify({
-    functionPerRoute: true,
-  }),
+  adapter: netlify(),
 });
